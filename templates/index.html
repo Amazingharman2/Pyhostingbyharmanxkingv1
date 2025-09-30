@@ -1,0 +1,82 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Script Host 🚀</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding-top: 20px; }
+        .file-list { margin-top: 20px; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #eee; }
+        .status-running { color: green; }
+        .status-not-running { color: red; }
+        .messages { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Python Script Host 🚀</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Upload Python File:</label>
+                <input type="file" class="form-control-file" id="file" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload ⬆️</button>
+        </form>
+
+        <div class="messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="file-list">
+            <h2>Uploaded Files 📁</h2>
+            {% if files %}
+                {% for file in files %}
+                    <div class="file-item">
+                        <span>{{ file }}</span>
+                        <div>
+                            <span class="badge badge-{{ 'success' if file_statuses[file] == 'Running' else 'danger' }}">
+                                {{ file_statuses[file] }}
+                            </span>
+                            <a href="{{ url_for('run_script', filename=file) }}" class="btn btn-sm btn-success">Run ▶️</a>
+                            <a href="{{ url_for('download_file', filename=file) }}" class="btn btn-sm btn-secondary">Download ⬇️</a>
+                            <a href="{{ url_for('delete_file', filename=file) }}" class="btn btn-sm btn-danger">Delete 🗑️</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No files uploaded yet.</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <h2>Install Python Package 📦</h2>
+            <form method="post" action="{{ url_for('install_package') }}">
+                <div class="form-group">
+                    <label for="package_name">Package Name:</label>
+                    <input type="text" class="form-control" id="package_name" name="package_name" placeholder="e.g., requests">
+                </div>
+                <button type="submit" class="btn btn-info">Install ⚙️</button>
+            </form>
+        </div>
+
+        <div>
+            <h2>Admin Access 🔒</h2>
+            <a href="{{ url_for('admin_logs') }}" class="btn btn-warning">View Logs 📜</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

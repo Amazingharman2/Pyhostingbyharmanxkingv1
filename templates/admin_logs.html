@@ -1,0 +1,36 @@
+html
+# templates/admin_logs.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Logs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Logs</h1>
+        {% if password_protected %}
+            <form method="post" action="{{ url_for('admin_logs') }}">
+                <input type="hidden" name="action" value="get_logs">
+                <div class="form-group">
+                    <label for="password">Admin Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">View Logs</button>
+            </form>
+        {% else %}
+            <pre>{{ logs }}</pre>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+        {% endif %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
